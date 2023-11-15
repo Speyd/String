@@ -12,6 +12,7 @@ void ClearScrean() {
 #else
 	system("clear");
 #endif
+	cout << "\tString" << endl;
 }
 void Enter(const int choice) {
 	string enter;
@@ -29,6 +30,7 @@ int PrintAllText(vector<String>& strings) {
 
 		for (int i = 0; i != size; i++) {
 
+			//cout << i + 1 << "-th string: " << strings[i][0] << endl;
 			cout << i + 1 << "-th string: " << strings[i].GetString() << endl;
 
 		}
@@ -42,27 +44,34 @@ int PrintAllText(vector<String>& strings) {
 	}
 }
 
+int ChoiceString(vector<String>& strings) {
+
+	int choice_string = 1, size = strings.size();
+
+	do {
+
+		ClearScrean();
+		PrintAllText(strings);
+
+		cout << "Choose a string" << endl;
+
+		if (choice_string >= 1 && choice_string <= size)cout << "Enter your choice: ";
+		else cout << "There is no such choice!\nEnter your choice again: ";
+
+		cin >> choice_string;
+
+
+	} while (choice_string < 1 || choice_string > size);
+
+	return --choice_string;
+}
+
 void FillString(vector<String>& strings) {
 
 	if (PrintAllText(strings) == 1) {
 
-		int choice_string = 1, size = String::GetAmountString();
+		int choice_string = ChoiceString(strings), size = String::GetAmountString();
 		char text[1000];
-
-		do {
-
-			ClearScrean();
-			PrintAllText(strings);
-
-			cout << "Choose a string" << endl;
-
-			if (choice_string >= 1 && choice_string <= size)cout << "Enter your choice: ";
-			else cout << "There is no such choice!\nEnter your choice again: ";
-
-			cin >> choice_string;
-
-
-		} while (choice_string < 1 || choice_string > size);
 
 		ClearScrean();
 		cout << "Enter new string text: ";
@@ -70,12 +79,13 @@ void FillString(vector<String>& strings) {
 		cin.ignore();
 		cin.getline(text, 1000);
 
-		strings[--choice_string].SetString(text);
+		strings[--choice_string] = String(text);
 
 		ClearScrean();
 		cout << "Text added successfully!" << endl;
 	}
 	else cin.ignore();
+
 
 }
 
@@ -107,6 +117,18 @@ void DeleteString(vector<String>& strings) {
 	}
 }
 
+void FindSymbol(vector<String>& strings) {
+
+	int choice_string = ChoiceString(strings);
+	char symbol;
+
+	ClearScrean();
+	cout << "Enter symbol for find: "; cin >> symbol;
+
+	cout << "Symbol(" << symbol << ") be " << strings[choice_string](symbol) << " place!" << endl;
+
+}
+
 int String::amount_string{ 0 };
 
 int main() {
@@ -123,14 +145,15 @@ int main() {
 
 			ClearScrean();
 			cout << "Choose an action\n[1] - Print all strings\n[2] - Create string\n[3] - Create a string with a specific size\n"
-				<< "[4] - Create a string and fill it\n[5] - Fill created string\n[6] - Delete string\n[0] - Exit" << endl;
+				 << "[4] - Create a string and fill it\n[5] - Fill created string\n[6] - Delete string\n"
+				 << "[7] - Find symbol in string\n[0] - Exit" << endl;
 
-			if (choice >= 0 && choice <= 6)cout << "Enter your choice: ";
+			if (choice >= 0 && choice <= 7)cout << "Enter your choice: ";
 			else cout << "There is no such choice!\nEnter your choice again: ";
 
 			cin >> choice;
 
-		} while (choice < 0 || choice > 6);
+		} while (choice < 0 || choice > 7);
 
 		ClearScrean();
 
@@ -143,11 +166,14 @@ int main() {
 		case 3:cout << "Enter size string: "; cin >> size; strings.push_back(String(size)); break;
 
 		case 4:cout << "Enter text string: "; cin.ignore();cin.getline(text,1000); 
-			   strings.push_back(String(text, strlen(text) + 1)); break;
+			strings.push_back(String(text, strlen(text) + 1)); 
+			String::SetAmountString(String::GetAmountString() - 1); break;
 
 		case 5:FillString(strings); break;
 
 		case 6:DeleteString(strings); break;
+
+		case 7:FindSymbol(strings); break;
 
 		}
 
